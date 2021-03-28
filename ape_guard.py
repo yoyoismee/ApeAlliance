@@ -76,10 +76,10 @@ def do_magic_2(text):
     return extract_info(magic, object)
 
 def extract_info(magic, object):
-    magic['no_contract'] = len(object.contracts.keys())
-    magic['no_function'] = 0
-    magic['risks'] = []
-    magic['comment'] = []
+    magic['Contract'] = len(object.contracts.keys())
+    magic['Function'] = 0
+    magic['Risks'] = []
+    magic['Comment'] = []
     magic['solidity version'] = object.pragmas[0]['value']
     magic['comment'].append("old solidity" if int(magic['solidity version'][2])<8 else "new solidity")
     for ck in object.contracts.keys():
