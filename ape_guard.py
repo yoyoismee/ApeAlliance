@@ -61,45 +61,44 @@ def parse_sol(sol_code):
 
 def do_magic(address):
     magic = {}
-    magic['score'] = 8
     codes = get_bsc_codes(address)
-    magic['no_files'] = len(codes)
+    magic['files'] = len(codes)
     big_magic = big_magic_file(codes)
-    magic['no_line'] = len(big_magic)
+    magic['line'] = len(big_magic)
     object = parse_sol(clean_call("\n".join(big_magic)))
     return extract_info(magic, object)
 
 def do_magic_2(text):
     magic = {}
-    magic['score'] = 8
     object = parse_sol(clean_call(text))
     return extract_info(magic, object)
 
 def extract_info(magic, object):
+    magic['Score'] = 8
     magic['Contract'] = len(object.contracts.keys())
     magic['Function'] = 0
     magic['Risks'] = []
     magic['Comment'] = []
-    magic['solidity version'] = object.pragmas[0]['value']
-    magic['comment'].append("old solidity" if int(magic['solidity version'][2])<8 else "new solidity")
+    magic['Solidity Version'] = object.pragmas[0]['value']
+    magic['Comment'].append("old solidity" if int(magic['Solidity Version'][2])<8 else "new solidity")
     for ck in object.contracts.keys():
-        magic['no_function'] += len(object.contracts[ck].functions.keys())
+        magic['Function'] += len(object.contracts[ck].functions.keys())
         for fk in object.contracts[ck].functions.keys():
             if fk is None:
                 continue
             if fk.find("migrate") > -1:
-                if keyword_list["migrate"] not in magic['risks']:
-                    magic['score'] -= 5
-                    magic['risks'].append(keyword_list["migrate"])
+                if keyword_list["migrate"] not in magic['Risks']:
+                    magic['Score'] -= 5
+                    magic['Risks'].append(keyword_list["migrate"])
     for imp in object.imports:
         if imp['path'].find("UniswapV2OracleLibrary"):
-            if keyword_list["UniswapV2OracleLibrary"] not in magic['risks']:
-                magic['score'] -= 1
-                magic['risks'].append(keyword_list["UniswapV2OracleLibrary"])
+            if keyword_list["UniswapV2OracleLibrary"] not in magic['Risks']:
+                magic['Score'] -= 1
+                magic['Risks'].append(keyword_list["UniswapV2OracleLibrary"])
         if imp['path'].find("AggregatorV3Interface"):
-            magic['comment'].append(keyword_list["AggregatorV3Interface"])
-    magic['risks'] = np.unique(magic['risks'])
-    magic['comment'] = np.unique(magic['comment'])
+            magic['Comment'].append(keyword_list["AggregatorV3Interface"])
+    magic['Risks'] = np.unique(magic['Risks'])
+    magic['Comment'] = np.unique(magic['Comment'])
     return magic
 
 
