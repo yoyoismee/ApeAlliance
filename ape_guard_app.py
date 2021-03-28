@@ -45,3 +45,11 @@ if bot or bot2:
     st.title(f'{magic["score"]} / 10 - overall security')
     for k in magic.keys():
         st.write(f'{k} {magic[k]}')
+    st.title("for more information")
+    st.write("pancake swap")
+    st.write("https://github.com/pancakeswap/pancake-swap-core")
+    st.write("https://bscscan.com/address/73feaa1ee314f8c655e354234017be2193c9e24e")
+    st.write("known exploit")
+    st.write("https://bscscan.com/address/0xd0d0AfCdddf7eE047a6Cb0AEF5D2d08Fd8390112")
+
+
