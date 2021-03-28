@@ -67,19 +67,21 @@ def do_magic(address):
     big_magic = big_magic_file(codes)
     magic['no_line'] = len(big_magic)
     object = parse_sol(clean_call("\n".join(big_magic)))
-    return method_name(magic, object)
+    return extract_info(magic, object)
 
 def do_magic_2(text):
     magic = {}
     magic['score'] = 8
     object = parse_sol(clean_call(text))
-    return method_name(magic, object)
+    return extract_info(magic, object)
 
-def method_name(magic, object):
+def extract_info(magic, object):
     magic['no_contract'] = len(object.contracts.keys())
     magic['no_function'] = 0
     magic['risks'] = []
     magic['comment'] = []
+    magic['solidity version'] = object.pragmas[0]['value']
+    magic['comment'].append("old solidity" if int(magic['solidity version'][2])<8 else "new solidity")
     for ck in object.contracts.keys():
         magic['no_function'] += len(object.contracts[ck].functions.keys())
         for fk in object.contracts[ck].functions.keys():
